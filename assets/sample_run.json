@@ -1,0 +1,18 @@
+{
+  "date": "2025-08-01",
+  "distance_km": 10.2,
+  "duration_minutes": 52,
+  "avg_pace_min_per_km": 5.1,
+  "elevation_gain_m": 95,
+  "weather": {
+    "temperature_c": 22,
+    "conditions": "Partly Cloudy",
+    "humidity_percent": 68
+  },
+  "heart_rate": {
+    "average_bpm": 157,
+    "max_bpm": 172
+  },
+  "feeling": "7/10",
+  "notes": "Started strong but legs felt heavy near the end. No major pain. Hydrated well."
+}

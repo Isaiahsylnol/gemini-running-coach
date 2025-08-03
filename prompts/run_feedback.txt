@@ -1,0 +1,9 @@
+Here is the user's run data:
+
+{run_data}
+
+Additional context:
+{custom_note}
+
+Based on this session, decide if they should REST or RAMP UP. 
+Explain the reasoning in plain language. Be concise but supportive.
