@@ -1,0 +1,26 @@
+[
+    {
+        "role": "user",
+        "parts": [
+            "Here is the user's run data:\n\n{\n  \"date\": \"2025-08-01\",\n  \"distance_km\": 10.2,\n  \"duration_minutes\": 52,\n  \"avg_pace_min_per_km\": 5.1,\n  \"elevation_gain_m\": 95,\n  \"weather\": {\n    \"temperature_c\": 22,\n    \"conditions\": \"Partly Cloudy\",\n    \"humidity_percent\": 68\n  },\n  \"heart_rate\": {\n    \"average_bpm\": 157,\n    \"max_bpm\": 172\n  },\n  \"feeling\": \"7/10\",\n  \"notes\": \"Started strong but legs felt heavy near the end. No major pain. Hydrated well.\"\n}\n\nAdditional context:\n\n\nBased on this session, decide if they should REST or RAMP UP. \nExplain the reasoning in plain language. Be concise but supportive."
+        ]
+    },
+    {
+        "role": "model",
+        "parts": [
+            "RAMP UP.\n\nThe run was a solid 10.2km with a good pace and respectable elevation gain.  The feeling (7/10) and notes indicate some fatigue but no significant issues.  The heart rate is within a reasonable range for a run of this distance and intensity.  A slight increase in training volume or intensity would be appropriate.\n"
+        ]
+    },
+    {
+        "role": "user",
+        "parts": [
+            "give tips"
+        ]
+    },
+    {
+        "role": "model",
+        "parts": [
+            "Based on the run data, here are some tips:\n\n* **Maintain hydration:**  The runner noted good hydration, which is excellent.  Continue this practice, especially on longer runs.\n\n* **Listen to your body:** The runner felt leg heaviness.  Pay attention to these signals.  If fatigue increases significantly, consider adjusting training volume or intensity.\n\n* **Consider strength training:** Incorporating strength training, particularly for legs and core, can improve running performance and help prevent injuries.  This could help mitigate the leg heaviness.\n\n* **Gradual progression:**  Continue to ramp up training gradually.  Don't increase distance or intensity too quickly.\n\n* **Vary your runs:**  Introduce different types of runs (e.g., interval training, easy runs) to improve fitness and prevent overuse injuries.\n\n* **Nutrition:** Ensure adequate nutrition to support training efforts.  Consider adding more carbohydrates and protein to your diet.\n\n* **Rest and recovery:**  Prioritize adequate sleep and rest days to allow your body to recover.  Even a short nap or rest break might help reduce the end of run fatigue.\n"
+        ]
+    }
+]

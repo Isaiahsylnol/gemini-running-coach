@@ -6,6 +6,7 @@ A Python starter project using Google's Gemini LLM to evaluate a runner's workou
 
 ## Run the Project
 ```bash
+export GEMINI_API_KEY=YOUR_API_KEY
 python3 main.py
 ```
 
