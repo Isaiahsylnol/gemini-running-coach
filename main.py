@@ -53,7 +53,68 @@ client = genai.Client(api_key=os.environ.get("GOOGLE_API_KEY"))
 chat_history = load_chat_history()
 chat = client.chats.create(model="gemini-1.5-flash", history=chat_history)
 
-def prompt_with_files(image_path=None, json_path=None, custom_note=None):
+def prompt_with_text(text):
+    if not text.strip():
+        print("\n❗ No text provided. Please input some text.\n")
+        return
+    # run_data = load_json_text("assets/sample_run.json")
+    run_data = None
+    formatted_prompt = load_prompt(
+            "prompts/run_feedback.txt",
+            run_data=json.dumps(run_data, indent=2),
+            custom_note=text.strip() or ""
+        )
+
+    chat_history.append({
+        "role": "user",
+        "parts": [{"text": text}]
+    })
+
+    # Send to Gemini and get response
+    response = chat.send_message(formatted_prompt)
+
+    chat_history.append({
+        "role": "model",
+        "parts": [{"text": response.text}]
+    })
+    print(f"\n🧠 Coach Says:\n{response.text}\n")
+
+def file_prompt_with_text(text, file_path):
+    """Sends a text prompt with a file to the Gemini model."""
+    if not text.strip():
+        print("\nNo text provided. Please input some text.\n")
+        return
+
+    if not file_path:
+        print("\nNo file path provided. Please input a valid file path.\n")
+        return
+
+    if not os.path.exists(file_path):
+        print(f"\nFile not found: {file_path}\n")
+        return
+
+    run_data = load_json_text(file_path)
+    formatted_prompt = load_prompt(
+        "prompts/run_feedback.txt",
+        run_data=json.dumps(run_data, indent=2),
+        custom_note=text.strip() or ""
+    )
+
+    chat_history.append({
+        "role": "user",
+        "parts": [{"text": text}, {"text": "[FILE]"}]
+    })
+
+    # Send to Gemini and get response
+    response = chat.send_message(formatted_prompt)
+
+    chat_history.append({
+        "role": "model",
+        "parts": [{"text": response.text}]
+    })
+    print(f"\n🧠 Coach Says:\n{response.text}\n")
+    
+def prompt_with_image(image_path=None, json_path=None, custom_note=None):
     parts = []
 
     if json_path:
@@ -75,8 +136,46 @@ def prompt_with_files(image_path=None, json_path=None, custom_note=None):
         parts.append(custom_note)
 
     if not parts:
-        print("\n❗ No data provided. Please input text, upload an image or metrics file.\n")
+        print("\nNo data provided. Please input text, upload an image or metrics file.\n")
         return
+
+    chat_history.append({
+        "role": "user",
+        "parts": [{"text": p} if isinstance(p, str) else {"text": "[FILE]"} for p in parts]
+    })
+
+    # Send to Gemini and get response
+    response = chat.send_message(parts)
+
+    chat_history.append({
+        "role": "model",
+        "parts": [{"text": response.text}]
+    })
+    print(f"\n🧠 Coach Says:\n{response.text}\n")
+
+def prompt_with_files_and_text(text, json_path=None):
+    """Sends a text prompt with optional JSON file to the Gemini model."""
+    if not text.strip():
+        print("\nNo text provided. Please input some text.\n")
+        return
+
+    # Add running coach context
+    context = (
+        "You are a knowledgeable, supportive running coach. "
+        "Give concise, actionable, and encouraging advice to runners of all levels. "
+        "Always respond as a running coach.\n"
+    )
+
+    parts = [context + text.strip()]
+
+    if json_path:
+        if not os.path.exists(json_path):
+            print(f"\nJSON file not found: {json_path}\n")
+            return
+        run_data = load_json_text(json_path)
+
+        json_text = f"\nHere is the user's run data:\n{json.dumps(run_data, indent=2)}"
+        parts.append(json_text)
 
     chat_history.append({
         "role": "user",
@@ -110,27 +209,33 @@ if __name__ == "__main__":
 
     try:
         while True:
-            print("Press any key to start a new entry, or 'q' to quit: ", end='', flush=True)
+            print("Press any key to start a new entry, or 'q' to quit: \n 't' - text prompt \n 'i' - image prompt \n 'f' - file prompt", end='', flush=True)
             cmd = get_single_key().lower()
             print()  # Move to next line after keypress
             if cmd == "q":
                 break
-            else:
-                image_path = input("Image path (optional, e.g. /path/to/screenshot.jpg): ").strip()
-                if image_path.lower() == 'q':
+            elif cmd == "t":
+                print("\n✍️ Enter your text prompt (type 'q' to quit):")
+                user_input = input("Prompt: ").strip()
+                if user_input.lower() == 'q':
                     break
-                json_path = input("Metrics file path (optional, e.g. assets/sample_run.json): ").strip()
-                if json_path.lower() == 'q':
+                prompt_with_text(user_input)
+            elif cmd == "i":
+                print("\n✍️ Enter your image prompt (type 'q' to quit):")
+                user_input = input("Prompt: ").strip()
+                if user_input.lower() == 'q':
                     break
-                note = input("Add any notes or goals (optional): ").strip()
-                if note.lower() == 'q':
+                prompt_with_image(user_input)
+            elif cmd == "f":
+                print("\n✍️ Enter your file prompt (type 'q' to quit):")
+                user_input = input("Prompt: ").strip()
+                if user_input.lower() == 'q':
                     break
+                text = input("file path: ").strip()
+                file_prompt_with_text(
+                    user_input,
+                    text if text else None)
 
-                prompt_with_files(
-                    image_path=image_path if image_path else None,
-                    json_path=json_path if json_path else None,
-                    custom_note=note if note else None
-                )
     finally:
         save_chat_history(chat_history)
         print("👋 Exiting. Have a great run!")
